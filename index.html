@@ -157,21 +157,10 @@
 
 <div class="config-panel">
   <div class="config-title">
-    <span class="status-dot" id="status-dot"></span>
-    Configuración del webhook N8N
-  </div>
-  <div class="config-input-row">
-    <input class="config-input" id="webhook-url" type="text" placeholder="https://ian8n.admosa.com/webhook-test/crediopciones-webhook"/>
-    <button class="config-save" onclick="saveWebhook()">Guardar</button>
+    <span class="status-dot connected" id="status-dot"></span>
+    Webhook N8N (fijo)
   </div>
   <div class="session-id-label" id="session-label">Session: generando...</div>
-  <div class="cors-note" id="cors-note" style="display:none">
-    ⚠️ Si ves error CORS, activa el modo proxy abajo o agrega el header en N8N.
-  </div>
-  <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-    <input type="checkbox" id="use-proxy" onchange="toggleProxy(this)"/>
-    <span style="color:#aebac1;font-size:12px;">Usar proxy CORS (si el webhook lo bloquea)</span>
-  </label>
 </div>
 
 <div class="phone-frame">
@@ -210,29 +199,12 @@
 
 <script>
   const SESSION_ID = 'demo-' + Math.random().toString(36).substring(2, 10);
-  let webhookUrl = '';
+  const webhookUrl = 'https://ian8n.admosa.com/webhook/crediopciones-webhook';
   let useProxy = false;
   let pendingFile = null;
   let sending = false;
 
   document.getElementById('session-label').textContent = 'Session: ' + SESSION_ID;
-
-  const saved = localStorage.getItem('n8n_webhook_url');
-  if (saved) {
-    webhookUrl = saved;
-    document.getElementById('webhook-url').value = saved;
-    document.getElementById('status-dot').classList.add('connected');
-  }
-
-  function toggleProxy(cb) {
-    useProxy = cb.checked;
-  }
-
-  function saveWebhook() {
-    webhookUrl = document.getElementById('webhook-url').value.trim();
-    localStorage.setItem('n8n_webhook_url', webhookUrl);
-    document.getElementById('status-dot').classList.add('connected');
-  }
 
   function autoGrow(el) {
     el.style.height = 'auto';
@@ -347,7 +319,6 @@
     const input = document.getElementById('msg-input');
     const text = input.value.trim();
     if (!text && !pendingFile) return;
-    if (!webhookUrl) { alert('Primero configura la URL del webhook.'); return; }
 
     sending = true;
     document.getElementById('send-btn').disabled = true;
